@@ -3,7 +3,7 @@ const app = require("./app.js");
 
 describe("/gigs", () => {
     test("GET- responds with list of gig data", async () => { 
-        const response = await request.get("/gigs");
+        const response = await request(app).get("/gigs");
         expect(response.body).toEqual([{
             name: "Ane Brun",
             image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ane_Brun_2012-03-29_003.jpg/500px-Ane_Brun_2012-03-29_003.jpg",
