@@ -6,6 +6,7 @@ app.use(express.json())
 
 app.use(cors());
 
+// List of gig objects
 const gigs = [{
   name: "Ane Brun",
   image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ane_Brun_2012-03-29_003.jpg/500px-Ane_Brun_2012-03-29_003.jpg",
@@ -31,5 +32,9 @@ const gigs = [{
   id: 3,
 }];
 
+// Routes
 
+
+
+// Exports
 module.exports = app;

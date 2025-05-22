@@ -27,8 +27,8 @@ describe("/gigs", () => {
             date: "2025/07/12",
             location: "Millenium Stadium, Cardiff",
             id: 3,
-            }])
-        expect(response.status).toBe(200)   
+            }]);
+        expect(response.status).toBe(200);   
     });
 
 });
