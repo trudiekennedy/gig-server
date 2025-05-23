@@ -1,10 +1,14 @@
-const request = require("supertest");
-const app = require("./app.js");
+const { fetchGigs, fetchGigByID, deleteGigByID, postGig} = require("./fetch");
 
-describe("/gigs", () => {
-    test("GET- responds with list of gig data", async () => { 
-        const response = await request(app).get("/gigs");
-        expect(response.body).toEqual([{
+//tests
+
+
+//test fetching all gigs
+describe("fetchGigs", () => {
+    it("returns all gigs", async () => {
+        const gigsData = await fetchGigs();
+        expect(gigsData).toEqual(
+            [{
             name: "Ane Brun",
             image: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Ane_Brun_2012-03-29_003.jpg/500px-Ane_Brun_2012-03-29_003.jpg",
             description: "Folk singer-songwriter",
@@ -27,35 +31,41 @@ describe("/gigs", () => {
             date: "2025-07-12T00:00:00.000Z",
             location: "Millenium Stadium, Cardiff",
             id: 3,
-            }]);
-        expect(response.status).toBe(200);   
+            }]
+        );
     });
+    // how to throw an error when invalid response from server - mocking?
 });
 
-describe("/gigs/:id", () => {
-    test("GET- responds with gig matching relevant id", async () => { 
-        const response = await request(app).get("/gigs/2");
-        expect(response.body).toEqual({
+// test fetching one gig by matching ID in url
+describe("fetchGigByID", () => {
+    // returns correct gig 
+    it("returns gig with matching id in the url", async () => {
+        const gigData = await fetchGigByID(2);
+        expect(gigData).toEqual(
+            {
             name: "Radiohead",
             image: "https://cdn.britannica.com/98/162198-050-6452139D/Radiohead-business-models-British-performers-innovator-Internet-2012.jpg?w=300",
             description: "Alternative",
             date: "2025-06-14T00:00:00.000Z",
             location: "The O2, Bristol",
             id: 2,
-            });
-        expect(response.status).toBe(200);   
+            }
+        );
     });
-    test("GET- responds with relevant error if gig not found", async () => { 
-        const response = await request(app).get("/gigs/100");
-        expect(response.body).toEqual({error: "Gig not found"});
-        expect(response.status).toBe(404);   
+    // returns correct message when 404 response
+    it("returns error message when 404 response", async () => {
+        await expect(fetchGigByID(100)).rejects.toThrow("Gig not found");
     });
+    // how to throw an error when invalid response from server - mocking?
 });
 
-describe("/gigs/:id", () => {
-    test("DELETE- responds with message to confirm deletion and new gig list", async () => { 
-        const response = await request(app).delete("/gigs/1");
-        expect(response.body).toEqual({message: "Successfully deleted gig", 
+// test deleting one gig by matching ID in url
+describe("deleteGigByID", () => {
+    // returns correct gig 
+    it("deletes gig and returns required message", async () => {
+        const deleteData = await deleteGigByID(1);
+        expect(deleteData).toEqual({message: "Successfully deleted gig", 
             gigs: [
             {
             name: "Radiohead",
@@ -72,21 +82,22 @@ describe("/gigs/:id", () => {
             date: "2025-07-12T00:00:00.000Z",
             location: "Millenium Stadium, Cardiff",
             id: 3,
-            }]});
-        expect(response.status).toBe(200);   
+            }]}
+        );
     });
-    test("GET- responds with relevant error if gig not found", async () => { 
-        const response = await request(app).delete("/gigs/100");
-        expect(response.body).toEqual({error: "Gig not found"});
-        expect(response.status).toBe(404);   
+    // returns correct message when 404 response
+    it("returns error message when 404 response", async () => {
+        await expect(deleteGigByID(100)).rejects.toThrow("Gig not found");
     });
+    // how to throw an error when invalid response from server - mocking?
 });
 
 
-// Test posting a new gig to gigs (remember have deleted one entry above)
-describe("POST /gigs", () => {
-    test("POST - responds with message and updated gig list", async () => { 
-
+// test post new gig
+describe("postGig", () => {
+    // returns correct gig 
+    it("posts gig and returns required message", async () => {
+        //gig date to be posted
         const data = {
             name: "Bjork",
             image: "https://magazine-resources.tidal.com/uploads/2017/09/LCD_1200.jpg",
@@ -94,14 +105,11 @@ describe("POST /gigs", () => {
             date: new Date("2025-10-12T00:00:00.000Z"),
             location: "Barbican Centre, London",
             id: 4,
-            };
-
-        const response = await request(app)
-            .post("/gigs")
-            .send({gig: data})
-            .set('Accept', 'application/json');
-
-        expect(response.body).toEqual({message: "Successfully posted new gig", 
+        };
+        // post the data using postData()
+        const postData = await postGig(data);
+        // expect correct result
+        expect(postData).toEqual({message: "Successfully posted new gig", 
             gigs: [
             {
             name: "Radiohead",
@@ -126,9 +134,8 @@ describe("POST /gigs", () => {
             date: "2025-10-12T00:00:00.000Z",
             location: "Barbican Centre, London",
             id: 4,
-            }]});
-
-        expect(response.status).toBe(201);   
+            }]}
+        );
     });
+    // how to throw an error when invalid response from server - mocking?
 });
-
